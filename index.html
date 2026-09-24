@@ -24,6 +24,7 @@
     --jade-strong:#1F5A40;
     --jade-soft:#E1EEE6;
     --gold:#A9791F;
+    --gold-ink:#F6EEDD;
     --stamp:#A23A2E;
     --stamp-ink:#F7E7E4;
     --shadow: 0 1px 2px rgba(32,40,31,0.06), 0 6px 18px -10px rgba(32,40,31,0.18);
@@ -41,6 +42,7 @@
       --jade-strong:#8FD1AE;
       --jade-soft:rgba(111,190,149,0.16);
       --gold:#D9AE55;
+      --gold-ink:rgba(217,174,85,0.16);
       --stamp:#E0897A;
       --stamp-ink:rgba(224,137,122,0.16);
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 24px -12px rgba(0,0,0,0.5);
@@ -58,6 +60,7 @@
     --jade-strong:#8FD1AE;
     --jade-soft:rgba(111,190,149,0.16);
     --gold:#D9AE55;
+    --gold-ink:rgba(217,174,85,0.16);
     --stamp:#E0897A;
     --stamp-ink:rgba(224,137,122,0.16);
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 24px -12px rgba(0,0,0,0.5);
@@ -155,7 +158,20 @@
     color:var(--jade-strong);
     line-height:1;
   }
+  .cover-total-value.is-negative{color:var(--stamp);}
   .yen{font-size:0.62em; margin-right:2px; opacity:0.85;}
+
+  .cover-breakdown{
+    position:relative;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:10px;
+    font-size:12.5px;
+    font-weight:700;
+  }
+  .breakdown-item.save{color:var(--jade-strong);}
+  .breakdown-item.expense{color:var(--gold);}
 
   /* Stats */
   .stats{
@@ -183,7 +199,9 @@
     font-size:clamp(16px,4.2vw,20px);
     color:var(--ink);
   }
-  .stat-unit{font-size:12px; color:var(--ink-soft); margin-left:2px; font-family:"Zen Kaku Gothic New",sans-serif; font-weight:500;}
+  .stat-value.is-save{color:var(--jade-strong);}
+  .stat-value.is-expense{color:var(--gold);}
+  .stat-value.is-negative{color:var(--stamp);}
 
   /* Chart */
   .chart-card{
@@ -193,11 +211,16 @@
     padding:18px 18px 14px;
     box-shadow:var(--shadow);
   }
+  .chart-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 14px;margin-bottom:2px;}
+  .chart-legend{display:flex;gap:12px;font-size:11.5px;color:var(--ink-soft);}
+  .legend-item{display:inline-flex;align-items:center;gap:5px;}
+  .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .legend-dot.save{background:var(--jade);}
+  .legend-dot.expense{background:var(--gold);}
   #chart{width:100%; height:auto; display:block; overflow:visible;}
-  .bar{fill:var(--jade); opacity:0.85;}
-  .bar.current{opacity:1;}
+  .bar-save{fill:var(--jade); opacity:0.88;}
+  .bar-expense{fill:var(--gold); opacity:0.88;}
   .bar-label{fill:var(--ink-soft); font-size:11px; font-family:"Zen Kaku Gothic New",sans-serif;}
-  .bar-value{fill:var(--ink); font-size:11px; font-family:"Zen Kaku Gothic New",sans-serif; font-weight:700;}
   .axis-line{stroke:var(--rule-strong); stroke-width:1;}
 
   /* Form */
@@ -208,9 +231,36 @@
     padding:20px 20px 22px;
     box-shadow:var(--shadow);
   }
+  .type-toggle{
+    display:flex;
+    background:var(--paper);
+    border:1px solid var(--rule-strong);
+    border-radius:999px;
+    padding:3px;
+    gap:3px;
+    margin-bottom:16px;
+  }
+  .type-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    font:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    padding:9px 0;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .type-btn[aria-selected="true"]{background:var(--paper-raised); box-shadow:var(--shadow);}
+  .type-btn[data-type="save"][aria-selected="true"]{color:var(--jade-strong);}
+  .type-btn[data-type="expense"][aria-selected="true"]{color:var(--gold);}
+  .type-btn:focus-visible{outline:2px solid var(--jade); outline-offset:2px;}
+
   #entryForm{display:flex; flex-direction:column; gap:14px;}
   .field-row{display:flex; gap:12px; flex-wrap:wrap;}
-  .field{display:flex; flex-direction:column; gap:6px; flex:1 1 140px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field-row > .field{flex:1 1 140px;}
   .field label{font-size:12.5px; color:var(--ink-soft); font-weight:500;}
   .field input[type="date"],
   .field input[type="text"],
@@ -258,7 +308,94 @@
     color:var(--jade-strong);
     font-weight:700;
   }
+  .is-expense-mode .pill[aria-checked="true"]{
+    background:var(--gold-ink);
+    border-color:var(--gold);
+    color:var(--gold);
+  }
   .pill:focus-visible{outline:2px solid var(--jade); outline-offset:2px;}
+
+  .category-head{display:flex; align-items:baseline; justify-content:space-between; gap:8px;}
+  .edit-categories-btn{
+    border:none;
+    background:transparent;
+    color:var(--ink-faint);
+    font:inherit;
+    font-size:12px;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+    padding:2px 0;
+  }
+  .edit-categories-btn:hover{color:var(--ink-soft);}
+  .edit-categories-btn:focus-visible{outline:2px solid var(--jade); outline-offset:2px;}
+
+  .category-editor{
+    margin-top:10px;
+    padding:12px;
+    background:var(--paper);
+    border:1px dashed var(--rule-strong);
+    border-radius:10px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .chip-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    padding:5px 8px 5px 13px;
+    border-radius:999px;
+    border:1px solid var(--rule-strong);
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+  }
+  .chip-remove{
+    border:none;
+    background:var(--rule-strong);
+    color:var(--paper-raised);
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    font-size:12px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .chip-remove:hover{background:var(--stamp);}
+  .chip-remove:disabled{opacity:0.35; cursor:not-allowed;}
+  .chip-remove:focus-visible{outline:2px solid var(--jade); outline-offset:2px;}
+  .category-add-row{display:flex; gap:8px;}
+  .category-add-row input{
+    flex:1;
+    min-width:0;
+    font:inherit;
+    font-size:13px;
+    color:var(--ink);
+    background:var(--paper-raised);
+    border:1px solid var(--rule-strong);
+    border-radius:8px;
+    padding:7px 11px;
+  }
+  .category-add-row input:focus-visible{outline:2px solid var(--jade); outline-offset:1px;}
+  .category-add-btn{
+    border:1px solid var(--jade);
+    background:var(--jade-soft);
+    color:var(--jade-strong);
+    font:inherit;
+    font-size:13px;
+    font-weight:700;
+    padding:7px 14px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .is-expense-mode .category-add-btn{border-color:var(--gold); background:var(--gold-ink); color:var(--gold);}
+  .category-add-btn:focus-visible{outline:2px solid var(--jade); outline-offset:2px;}
+  .category-hint{font-size:12px; color:var(--ink-faint); margin:0;}
 
   .field-error{
     color:var(--stamp);
@@ -280,7 +417,12 @@
     font-size:22px;
     letter-spacing:0.08em;
     cursor:pointer;
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .stamp-btn.is-expense{
+    border-color:var(--gold);
+    background:var(--gold-ink);
+    color:var(--gold);
   }
   .stamp-btn:hover{transform:scale(1.04) rotate(-2deg);}
   .stamp-btn:active{transform:scale(0.96) rotate(1deg);}
@@ -310,9 +452,10 @@
   }
   .month-header .month-subtotal{
     font-size:13px;
-    color:var(--jade-strong);
     font-weight:700;
+    color:var(--jade-strong);
   }
+  .month-header .month-subtotal.is-negative{color:var(--stamp);}
   .entry-row{
     display:flex;
     align-items:center;
@@ -329,7 +472,7 @@
     width:38px;
     flex:none;
   }
-  .entry-main{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:3px;}
+  .entry-main{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
   .entry-memo{
     font-size:14px;
     color:var(--ink);
@@ -338,6 +481,15 @@
     text-overflow:ellipsis;
   }
   .entry-memo.is-empty{color:var(--ink-faint); font-style:normal;}
+  .entry-tags{display:flex; gap:6px; flex-wrap:wrap;}
+  .type-tag{
+    font-size:11px;
+    font-weight:700;
+    border-radius:999px;
+    padding:2px 8px;
+  }
+  .type-tag.save{background:var(--jade-soft); color:var(--jade-strong);}
+  .type-tag.expense{background:var(--gold-ink); color:var(--gold);}
   .entry-category{
     font-size:11px;
     color:var(--ink-soft);
@@ -345,15 +497,15 @@
     border:1px solid var(--rule);
     border-radius:999px;
     padding:2px 8px;
-    align-self:flex-start;
   }
   .entry-amount{
     font-weight:700;
-    color:var(--jade-strong);
     font-size:15px;
     flex:none;
     white-space:nowrap;
   }
+  .entry-amount.is-save{color:var(--jade-strong);}
+  .entry-amount.is-expense{color:var(--gold);}
   .entry-delete{
     flex:none;
     border:none;
@@ -391,33 +543,47 @@
       <h1>せつやく帳</h1>
     </div>
     <div class="cover-total">
-      <span class="cover-total-label">これまでの節約合計</span>
-      <span class="cover-total-value"><span class="yen">¥</span><span id="grandTotal">0</span></span>
+      <span class="cover-total-label">これまでの差引き（節約－出費）</span>
+      <span class="cover-total-value" id="grandNetValue"><span id="grandNetSign"></span><span class="yen">¥</span><span id="grandNet">0</span></span>
+    </div>
+    <div class="cover-breakdown">
+      <span class="breakdown-item save">節約合計 ¥<span id="grandSave">0</span></span>
+      <span class="breakdown-item expense">出費合計 ¥<span id="grandExpense">0</span></span>
     </div>
   </header>
 
-  <section class="stats" aria-label="集計">
+  <section class="stats" aria-label="今月の集計">
     <div class="stat">
       <span class="stat-label">今月の節約</span>
-      <span class="stat-value">¥<span id="monthTotal">0</span></span>
+      <span class="stat-value is-save">¥<span id="monthSave">0</span></span>
     </div>
     <div class="stat">
-      <span class="stat-label">今年の節約</span>
-      <span class="stat-value">¥<span id="yearTotal">0</span></span>
+      <span class="stat-label">今月の出費</span>
+      <span class="stat-value is-expense">¥<span id="monthExpense">0</span></span>
     </div>
     <div class="stat">
-      <span class="stat-label">記録件数</span>
-      <span class="stat-value"><span id="entryCount">0</span><span class="stat-unit">件</span></span>
+      <span class="stat-label">今月の差引</span>
+      <span class="stat-value" id="monthNet">¥0</span>
     </div>
   </section>
 
   <section class="chart-card" aria-label="月別の推移">
-    <h2 class="section-title">月別の推移（過去6か月）</h2>
+    <div class="chart-head">
+      <h2 class="section-title" style="margin-bottom:0;">月別の推移（過去6か月）</h2>
+      <div class="chart-legend">
+        <span class="legend-item"><span class="legend-dot save"></span>節約</span>
+        <span class="legend-item"><span class="legend-dot expense"></span>出費</span>
+      </div>
+    </div>
     <svg id="chart" viewBox="0 0 600 190" preserveAspectRatio="xMidYMid meet"></svg>
   </section>
 
-  <section class="entry-form-card" aria-label="節約を記録する">
-    <h2 class="section-title">今日の節約を記録する</h2>
+  <section class="entry-form-card" aria-label="記録する">
+    <div class="type-toggle" role="tablist" aria-label="記録の種類">
+      <button type="button" class="type-btn" data-type="save" aria-selected="true">節約</button>
+      <button type="button" class="type-btn" data-type="expense" aria-selected="false">出費</button>
+    </div>
+    <h2 class="section-title" id="formHeading">今日の節約を記録する</h2>
     <form id="entryForm" novalidate>
       <div class="field-row">
         <div class="field">
@@ -425,7 +591,7 @@
           <input type="date" id="fDate" required>
         </div>
         <div class="field field-amount">
-          <label for="fAmount">節約額</label>
+          <label for="fAmount" id="amountLabel">節約額</label>
           <div class="amount-input"><span class="yen">¥</span><input type="number" id="fAmount" inputmode="numeric" min="1" step="1" placeholder="500" required></div>
         </div>
       </div>
@@ -434,11 +600,22 @@
         <input type="text" id="fMemo" placeholder="例：コンビニのコーヒーを我慢した" maxlength="60">
       </div>
       <div class="field">
-        <label id="categoryLabel">カテゴリ</label>
+        <div class="category-head">
+          <label id="categoryLabel">カテゴリ</label>
+          <button type="button" class="edit-categories-btn" id="editCategoriesBtn">編集</button>
+        </div>
         <div class="category-pills" id="categoryPills" role="radiogroup" aria-labelledby="categoryLabel"></div>
+        <div class="category-editor" id="categoryEditor" hidden>
+          <div class="chip-list" id="categoryChipList"></div>
+          <div class="category-add-row">
+            <input type="text" id="newCategoryInput" placeholder="新しいカテゴリ名" maxlength="14">
+            <button type="button" class="category-add-btn" id="addCategoryBtn">追加</button>
+          </div>
+          <p class="category-hint">最大10個、最低1個は残ります。</p>
+        </div>
       </div>
       <p class="field-error" id="formError" hidden></p>
-      <button type="submit" class="stamp-btn" aria-label="記録する"><span>記</span></button>
+      <button type="submit" class="stamp-btn" id="stampBtn" aria-label="記録する"><span id="stampGlyph">節</span></button>
     </form>
   </section>
 
@@ -453,7 +630,33 @@
   "use strict";
 
   var STORAGE_KEY = "setsuyakucho_entries_v1";
-  var CATEGORIES = ["外食を我慢","セール・割引","ポイント利用","自炊・弁当","サブスク見直し","その他"];
+  var CATS_STORAGE_KEY = "setsuyakucho_categories_v1";
+  var DEFAULT_CATS = {
+    save: ["外食を我慢","セール・割引","ポイント利用","自炊・弁当","サブスク見直し","その他"],
+    expense: ["食費","日用品","交通費","娯楽・趣味","家賃・光熱費","その他"]
+  };
+  var MAX_CATEGORIES = 10;
+
+  function loadCategories(){
+    try{
+      var raw = window.localStorage.getItem(CATS_STORAGE_KEY);
+      if(!raw) return { save: DEFAULT_CATS.save.slice(), expense: DEFAULT_CATS.expense.slice() };
+      var parsed = JSON.parse(raw);
+      var save = Array.isArray(parsed.save) && parsed.save.length ? parsed.save : DEFAULT_CATS.save.slice();
+      var expense = Array.isArray(parsed.expense) && parsed.expense.length ? parsed.expense : DEFAULT_CATS.expense.slice();
+      return { save: save, expense: expense };
+    }catch(e){
+      return { save: DEFAULT_CATS.save.slice(), expense: DEFAULT_CATS.expense.slice() };
+    }
+  }
+  function saveCategories(){
+    try{ window.localStorage.setItem(CATS_STORAGE_KEY, JSON.stringify(CATS)); }catch(e){}
+  }
+
+  var FORM_COPY = {
+    save: { heading:"今日の節約を記録する", amountLabel:"節約額", amountPlaceholder:"500", memoPlaceholder:"例：コンビニのコーヒーを我慢した", glyph:"節" },
+    expense: { heading:"今日の出費を記録する", amountLabel:"出費額", amountPlaceholder:"800", memoPlaceholder:"例：スーパーで食料品を購入", glyph:"費" }
+  };
 
   function toDateStr(d){
     var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
@@ -461,6 +664,7 @@
   }
   function ymOf(dateStr){ return dateStr.slice(0,7); }
   function uid(){ return "e"+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function typeOf(e){ return e.type === "expense" ? "expense" : "save"; }
 
   function loadEntries(){
     try{
@@ -475,36 +679,77 @@
   }
 
   var entries = loadEntries();
+  var CATS = loadCategories();
+  var currentType = "save";
+  var selectedCategory = { save: CATS.save[0], expense: CATS.expense[0] };
+  var editingCategories = false;
 
   var els = {
-    grandTotal: document.getElementById("grandTotal"),
-    monthTotal: document.getElementById("monthTotal"),
-    yearTotal: document.getElementById("yearTotal"),
-    entryCount: document.getElementById("entryCount"),
+    grandNetValue: document.getElementById("grandNetValue"),
+    grandNetSign: document.getElementById("grandNetSign"),
+    grandNet: document.getElementById("grandNet"),
+    grandSave: document.getElementById("grandSave"),
+    grandExpense: document.getElementById("grandExpense"),
+    monthSave: document.getElementById("monthSave"),
+    monthExpense: document.getElementById("monthExpense"),
+    monthNet: document.getElementById("monthNet"),
     chart: document.getElementById("chart"),
     ledgerList: document.getElementById("ledgerList"),
     form: document.getElementById("entryForm"),
+    formHeading: document.getElementById("formHeading"),
+    amountLabel: document.getElementById("amountLabel"),
     fDate: document.getElementById("fDate"),
     fAmount: document.getElementById("fAmount"),
     fMemo: document.getElementById("fMemo"),
     categoryPills: document.getElementById("categoryPills"),
+    editCategoriesBtn: document.getElementById("editCategoriesBtn"),
+    categoryEditor: document.getElementById("categoryEditor"),
+    categoryChipList: document.getElementById("categoryChipList"),
+    newCategoryInput: document.getElementById("newCategoryInput"),
+    addCategoryBtn: document.getElementById("addCategoryBtn"),
     formError: document.getElementById("formError"),
-    clearAll: document.getElementById("clearAll")
+    clearAll: document.getElementById("clearAll"),
+    stampBtn: document.getElementById("stampBtn"),
+    stampGlyph: document.getElementById("stampGlyph"),
+    typeBtns: Array.prototype.slice.call(document.querySelectorAll(".type-btn")),
+    entryFormCard: document.querySelector(".entry-form-card")
   };
 
-  var selectedCategory = CATEGORIES[0];
+  function fmtYen(n){ return Math.round(Math.abs(n)).toLocaleString("ja-JP"); }
+
+  function splitTotals(list){
+    var save = 0, expense = 0;
+    list.forEach(function(e){
+      if(typeOf(e) === "expense") expense += e.amount; else save += e.amount;
+    });
+    return { save: save, expense: expense, net: save - expense };
+  }
+
+  function applyTypeCopy(){
+    var copy = FORM_COPY[currentType];
+    els.formHeading.textContent = copy.heading;
+    els.amountLabel.textContent = copy.amountLabel;
+    els.fAmount.placeholder = copy.amountPlaceholder;
+    els.fMemo.placeholder = copy.memoPlaceholder;
+    els.stampGlyph.textContent = copy.glyph;
+    els.stampBtn.classList.toggle("is-expense", currentType === "expense");
+    els.entryFormCard.classList.toggle("is-expense-mode", currentType === "expense");
+  }
 
   function buildPills(){
+    if(CATS[currentType].indexOf(selectedCategory[currentType]) === -1){
+      selectedCategory[currentType] = CATS[currentType][0];
+    }
     els.categoryPills.innerHTML = "";
-    CATEGORIES.forEach(function(cat){
+    CATS[currentType].forEach(function(cat){
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "pill";
       btn.setAttribute("role","radio");
-      btn.setAttribute("aria-checked", cat === selectedCategory ? "true" : "false");
+      btn.setAttribute("aria-checked", cat === selectedCategory[currentType] ? "true" : "false");
       btn.textContent = cat;
       btn.addEventListener("click", function(){
-        selectedCategory = cat;
+        selectedCategory[currentType] = cat;
         Array.prototype.forEach.call(els.categoryPills.children, function(c){
           c.setAttribute("aria-checked", c === btn ? "true" : "false");
         });
@@ -513,24 +758,90 @@
     });
   }
 
-  function fmtYen(n){ return Math.round(n).toLocaleString("ja-JP"); }
+  function renderCategoryEditor(){
+    els.categoryChipList.innerHTML = "";
+    var list = CATS[currentType];
+    list.forEach(function(cat){
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      var label = document.createElement("span");
+      label.textContent = cat;
+      var removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "chip-remove";
+      removeBtn.textContent = "×";
+      removeBtn.setAttribute("aria-label", cat + "を削除");
+      removeBtn.disabled = list.length <= 1;
+      removeBtn.addEventListener("click", function(){
+        var idx = CATS[currentType].indexOf(cat);
+        if(idx === -1 || CATS[currentType].length <= 1) return;
+        CATS[currentType].splice(idx, 1);
+        saveCategories();
+        buildPills();
+        renderCategoryEditor();
+      });
+      chip.appendChild(label);
+      chip.appendChild(removeBtn);
+      els.categoryChipList.appendChild(chip);
+    });
+  }
+
+  function addCategory(){
+    var name = els.newCategoryInput.value.trim();
+    if(!name) return;
+    if(CATS[currentType].indexOf(name) !== -1){
+      els.newCategoryInput.value = "";
+      return;
+    }
+    if(CATS[currentType].length >= MAX_CATEGORIES) return;
+    CATS[currentType].push(name);
+    saveCategories();
+    els.newCategoryInput.value = "";
+    buildPills();
+    renderCategoryEditor();
+  }
+
+  els.editCategoriesBtn.addEventListener("click", function(){
+    editingCategories = !editingCategories;
+    els.categoryEditor.hidden = !editingCategories;
+    els.editCategoriesBtn.textContent = editingCategories ? "閉じる" : "編集";
+    if(editingCategories) renderCategoryEditor();
+  });
+  els.addCategoryBtn.addEventListener("click", addCategory);
+  els.newCategoryInput.addEventListener("keydown", function(ev){
+    if(ev.key === "Enter"){ ev.preventDefault(); addCategory(); }
+  });
+
+  els.typeBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      if(btn.dataset.type === currentType) return;
+      currentType = btn.dataset.type;
+      els.typeBtns.forEach(function(b){ b.setAttribute("aria-selected", b === btn ? "true" : "false"); });
+      applyTypeCopy();
+      buildPills();
+      if(editingCategories) renderCategoryEditor();
+      els.formError.hidden = true;
+    });
+  });
 
   function render(){
     var now = new Date();
     var curYm = toDateStr(now).slice(0,7);
-    var curYear = String(now.getFullYear());
+    var monthList = entries.filter(function(e){ return ymOf(e.date) === curYm; });
 
-    var grand = 0, monthSum = 0, yearSum = 0;
-    entries.forEach(function(e){
-      grand += e.amount;
-      if(ymOf(e.date) === curYm) monthSum += e.amount;
-      if(e.date.slice(0,4) === curYear) yearSum += e.amount;
-    });
+    var grand = splitTotals(entries);
+    var month = splitTotals(monthList);
 
-    els.grandTotal.textContent = fmtYen(grand);
-    els.monthTotal.textContent = fmtYen(monthSum);
-    els.yearTotal.textContent = fmtYen(yearSum);
-    els.entryCount.textContent = entries.length;
+    els.grandNetSign.textContent = grand.net < 0 ? "-" : "";
+    els.grandNet.textContent = fmtYen(grand.net);
+    els.grandNetValue.classList.toggle("is-negative", grand.net < 0);
+    els.grandSave.textContent = fmtYen(grand.save);
+    els.grandExpense.textContent = fmtYen(grand.expense);
+
+    els.monthSave.textContent = fmtYen(month.save);
+    els.monthExpense.textContent = fmtYen(month.expense);
+    els.monthNet.textContent = (month.net < 0 ? "-¥" : "¥") + fmtYen(month.net);
+    els.monthNet.classList.toggle("is-negative", month.net < 0);
 
     renderChart();
     renderList();
@@ -542,31 +853,34 @@
     var now = new Date();
     for(var i=5;i>=0;i--){
       var d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-      months.push({ ym: toDateStr(d).slice(0,7), label:(d.getMonth()+1)+"月", total:0 });
+      months.push({ ym: toDateStr(d).slice(0,7), label:(d.getMonth()+1)+"月", save:0, expense:0 });
     }
     entries.forEach(function(e){
       var ym = ymOf(e.date);
       var m = months.find(function(x){ return x.ym === ym; });
-      if(m) m.total += e.amount;
+      if(!m) return;
+      if(typeOf(e) === "expense") m.expense += e.amount; else m.save += e.amount;
     });
 
-    var max = Math.max.apply(null, months.map(function(m){return m.total;}).concat([1]));
-    var W=600,H=190, padL=8, padR=8, baseY=150, top=22, barGap=14;
+    var max = Math.max.apply(null, months.map(function(m){return Math.max(m.save,m.expense);}).concat([1]));
+    var W=600, padL=10, padR=10, baseY=150, top=20, groupGap=10;
     var n=months.length;
-    var barW = (W - padL - padR - barGap*(n-1)) / n;
+    var groupW = (W - padL - padR - groupGap*(n-1)) / n;
+    var barW = Math.min(30, (groupW - 6) / 2);
+    var barGap = 6;
 
     var svg = "";
     svg += '<line class="axis-line" x1="'+padL+'" y1="'+baseY+'" x2="'+(W-padR)+'" y2="'+baseY+'"></line>';
     months.forEach(function(m,i){
-      var x = padL + i*(barW+barGap);
-      var h = m.total > 0 ? Math.max(4, (m.total/max) * (baseY-top)) : 0;
-      var y = baseY - h;
-      var isCurrent = i === n-1;
-      svg += '<rect class="bar'+(isCurrent?' current':'')+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="4"></rect>';
-      if(m.total > 0){
-        svg += '<text class="bar-value" x="'+(x+barW/2).toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle">'+fmtYen(m.total)+'</text>';
-      }
-      svg += '<text class="bar-label" x="'+(x+barW/2).toFixed(1)+'" y="'+(baseY+18)+'" text-anchor="middle">'+m.label+'</text>';
+      var gx = padL + i*(groupW+groupGap);
+      var cx = gx + groupW/2;
+      var saveX = cx - barGap/2 - barW;
+      var expX = cx + barGap/2;
+      var saveH = m.save > 0 ? Math.max(4, (m.save/max) * (baseY-top)) : 0;
+      var expH = m.expense > 0 ? Math.max(4, (m.expense/max) * (baseY-top)) : 0;
+      svg += '<rect class="bar-save" x="'+saveX.toFixed(1)+'" y="'+(baseY-saveH).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+saveH.toFixed(1)+'" rx="3"></rect>';
+      svg += '<rect class="bar-expense" x="'+expX.toFixed(1)+'" y="'+(baseY-expH).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+expH.toFixed(1)+'" rx="3"></rect>';
+      svg += '<text class="bar-label" x="'+cx.toFixed(1)+'" y="'+(baseY+18)+'" text-anchor="middle">'+m.label+'</text>';
     });
 
     els.chart.innerHTML = svg;
@@ -577,7 +891,7 @@
     if(entries.length === 0){
       var empty = document.createElement("div");
       empty.className = "ledger-empty";
-      empty.textContent = "まだ記録がありません。上のフォームから最初の節約を記録しましょう。";
+      empty.textContent = "まだ記録がありません。上のフォームから最初の記録をつけましょう。";
       els.ledgerList.appendChild(empty);
       return;
     }
@@ -592,37 +906,43 @@
     sorted.forEach(function(e){
       var ym = ymOf(e.date);
       if(!byYm[ym]){
-        byYm[ym] = { ym: ym, items: [], subtotal: 0 };
+        byYm[ym] = { ym: ym, items: [] };
         groups.push(byYm[ym]);
       }
       byYm[ym].items.push(e);
-      byYm[ym].subtotal += e.amount;
     });
 
     groups.forEach(function(g){
       var parts = g.ym.split("-");
+      var totals = splitTotals(g.items);
       var groupEl = document.createElement("div");
       groupEl.className = "month-group";
 
       var header = document.createElement("div");
       header.className = "month-header";
-      header.innerHTML = '<h3>'+parts[0]+'年'+parseInt(parts[1],10)+'月</h3><span class="month-subtotal">¥'+fmtYen(g.subtotal)+'</span>';
+      var netStr = (totals.net < 0 ? "-¥" : "¥") + fmtYen(totals.net);
+      header.innerHTML = '<h3>'+parts[0]+'年'+parseInt(parts[1],10)+'月</h3><span class="month-subtotal'+(totals.net<0?' is-negative':'')+'">差引 '+netStr+'</span>';
       groupEl.appendChild(header);
 
       g.items.forEach(function(e){
+        var t = typeOf(e);
         var row = document.createElement("div");
         row.className = "entry-row";
         var day = parseInt(e.date.split("-")[2],10);
 
         var memoHtml = e.memo ? escapeHtml(e.memo) : '<span class="is-empty">メモなし</span>';
+        var sign = t === "expense" ? "-" : "+";
 
         row.innerHTML =
           '<span class="entry-day">'+day+'日</span>'+
           '<span class="entry-main">'+
             '<span class="entry-memo">'+memoHtml+'</span>'+
-            '<span class="entry-category">'+escapeHtml(e.category||"その他")+'</span>'+
+            '<span class="entry-tags">'+
+              '<span class="type-tag '+t+'">'+(t==="expense"?"出費":"節約")+'</span>'+
+              '<span class="entry-category">'+escapeHtml(e.category||"その他")+'</span>'+
+            '</span>'+
           '</span>'+
-          '<span class="entry-amount">¥'+fmtYen(e.amount)+'</span>'+
+          '<span class="entry-amount is-'+t+'">'+sign+'¥'+fmtYen(e.amount)+'</span>'+
           '<button type="button" class="entry-delete" data-id="'+e.id+'">削除</button>';
         groupEl.appendChild(row);
       });
@@ -680,12 +1000,19 @@
 
     if(!date || !amount || amount <= 0){
       els.formError.hidden = false;
-      els.formError.textContent = "日付と節約額（1円以上）を入力してください。";
+      els.formError.textContent = "日付と金額（1円以上）を入力してください。";
       return;
     }
     els.formError.hidden = true;
 
-    entries.push({ id: uid(), date: date, amount: Math.round(amount), memo: memo, category: selectedCategory });
+    entries.push({
+      id: uid(),
+      date: date,
+      amount: Math.round(amount),
+      memo: memo,
+      category: selectedCategory[currentType],
+      type: currentType
+    });
     saveEntries(entries);
 
     els.fAmount.value = "";
@@ -695,6 +1022,7 @@
     render();
   });
 
+  applyTypeCopy();
   buildPills();
   els.fDate.value = toDateStr(new Date());
   render();
